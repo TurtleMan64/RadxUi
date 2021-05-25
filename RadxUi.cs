@@ -639,8 +639,17 @@ public class RadxUi
                 {
                     txtBoxLoopStart.Text = output[3].Substring(output[3].IndexOf("Loop start sample:") + 19);
                     txtBoxLoopEnd  .Text = output[4].Substring(output[4].IndexOf("Loop end sample:"  ) + 17);
-
-                    chkBoxLoopEnabled.Checked = true;
+                    
+                    if (txtBoxLoopStart.Text == "0" && txtBoxLoopEnd.Text == "0")
+                    {
+                        //Handle a quirk with radx_encode on non looping adx's. They will show 0 for start and end.
+                        txtBoxLoopEnd.Text = numSamples.ToString();
+                        chkBoxLoopEnabled.Checked = false;
+                    }
+                    else
+                    {
+                        chkBoxLoopEnabled.Checked = true;
+                    }
                 }
                 else
                 {
