@@ -29,10 +29,10 @@ public class RadxUi
     public static Label labelLoopStart   = new Label();
     public static Label labelLoopEnd     = new Label();
     
-    public static Bitmap imgWaveformL = new Bitmap(584, 128); //584, 128
+    public static Bitmap imgWaveformL = new Bitmap(584, 128);
     public static PictureBox picBoxWaveformL = new PictureBox();
     
-    public static Bitmap imgWaveformR = new Bitmap(584, 128); //584, 128
+    public static Bitmap imgWaveformR = new Bitmap(584, 128);
     public static PictureBox picBoxWaveformR = new PictureBox();
     
     public static int numChannels = 1;
@@ -42,8 +42,6 @@ public class RadxUi
     public static short[] samplesL = new short[0];
     public static short[] samplesR = new short[0];
     
-    //public static Random rnd = new Random();
-    
     public static string TMP_DIR = ".tmp/";
     public static string TMP_WAV_FILE = "tmp123abcJYfPEaQEFI.wav";
     public static string EXE_DIR = "";
@@ -51,8 +49,8 @@ public class RadxUi
     [STAThread]
     public static void Main()
     {
-        //var handle = GetConsoleWindow();
-        //ShowWindow(handle, SW_HIDE);
+        var handle = GetConsoleWindow();
+        ShowWindow(handle, SW_HIDE);
         
         EXE_DIR = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location) + "/";
         
@@ -186,10 +184,7 @@ public class RadxUi
         {
             File.Delete(EXE_DIR + TMP_DIR + TMP_WAV_FILE);
         }
-        catch (Exception e)
-        {
-            MessageBox.Show("Could not delete temp file: " + e.ToString());
-        }
+        catch {}
     }
     
     public static void eventDragEnter(object sender, DragEventArgs e)
@@ -357,7 +352,7 @@ public class RadxUi
     
     public static void eventHelpAbout(object sender, EventArgs e)
     {
-        MessageBox.Show("RADX UI version 1.0\n\nDrag and drop files onto UI to open them.");
+        MessageBox.Show("RADX UI version 1.0\nRADX version 0.3.1\n\nDrag and drop files onto UI to open them.");
     }
     
     public static void eventLoopTextChanged(object sender, EventArgs e)
@@ -406,7 +401,7 @@ public class RadxUi
                 for (int s = 0; s < (int)samplesPerPixel; s++)
                 {
                     short sample = samples[x*(int)samplesPerPixel + s];
-                    //Console.WriteLine(sample.ToString());
+
                     if (sample > max)
                     {
                         max = sample;
@@ -466,7 +461,7 @@ public class RadxUi
                         }
                     }
                 }
-                catch (Exception) {}
+                catch {}
     
                 try
                 {
@@ -481,7 +476,7 @@ public class RadxUi
                         }
                     }
                 }
-                catch (Exception) {}
+                catch {}
             }
         }
         
@@ -502,7 +497,7 @@ public class RadxUi
                 throw new Exception("RIFF not found");
             }
 
-            int size1 = BitConverter.ToInt32(f, 4);             //Console.WriteLine("size1          = " + size1.ToString());
+            int size1 = BitConverter.ToInt32(f, 4);
 
             if (f[ 8] != 'W' ||
                 f[ 9] != 'A' ||
@@ -520,13 +515,13 @@ public class RadxUi
                 throw new Exception("fmt not found");
             }
 
-            int   chunkSize      = BitConverter.ToInt32(f, 16); //Console.WriteLine("chunkSize      = " + chunkSize.ToString());
-            short formatType     = BitConverter.ToInt16(f, 20); //Console.WriteLine("formatType     = " + formatType.ToString());
-            short channels       = BitConverter.ToInt16(f, 22); //Console.WriteLine("channels       = " + channels.ToString());
-            int   sr             = BitConverter.ToInt32(f, 24); //Console.WriteLine("sr             = " + sr.ToString());
-            int   avgBytesPerSec = BitConverter.ToInt32(f, 28); //Console.WriteLine("avgBytesPerSec = " + avgBytesPerSec.ToString());
-            short bytesPS        = BitConverter.ToInt16(f, 32); //Console.WriteLine("bytesPS        = " + bytesPS.ToString());
-            short bitsPS         = BitConverter.ToInt16(f, 34); //Console.WriteLine("bitsPS         = " + bitsPS.ToString());
+            int   chunkSize      = BitConverter.ToInt32(f, 16);
+            short formatType     = BitConverter.ToInt16(f, 20);
+            short channels       = BitConverter.ToInt16(f, 22);
+            int   sr             = BitConverter.ToInt32(f, 24);
+            int   avgBytesPerSec = BitConverter.ToInt32(f, 28);
+            short bytesPS        = BitConverter.ToInt16(f, 32);
+            short bitsPS         = BitConverter.ToInt16(f, 34);
             
             if (formatType != 1 || (bitsPS != 8 && bitsPS != 16))
             {
@@ -542,14 +537,13 @@ public class RadxUi
                 throw new Exception("data not found");
             }
 
-            int dataSizeBytes = BitConverter.ToInt32(f, 40);    //Console.WriteLine("dataSizeBytes  = " + dataSizeBytes.ToString());
+            int dataSizeBytes = BitConverter.ToInt32(f, 40);
             
             byte[] data = new byte[dataSizeBytes];
             Array.Copy(f, 44, data, 0, dataSizeBytes);
             
             if (!path.Contains(TMP_WAV_FILE))
             {
-                //System.Threading.Thread.Sleep(500);
                 File.Copy(path, EXE_DIR + TMP_DIR + TMP_WAV_FILE, true);
             }
             
@@ -587,12 +581,6 @@ public class RadxUi
             {
                 throw new Exception("numChannels " + numChannels.ToString() + " not supported");
             }
-            
-            //Console.WriteLine("numChannels   = " + numChannels.ToString());
-            //Console.WriteLine("bitsPerSample = " + bitsPerSample.ToString());
-            //Console.WriteLine("numSamples    = " + numSamples.ToString());
-            //Console.WriteLine("sampleRate    = " + sampleRate.ToString());
-            //Console.WriteLine();
             
             txtBoxLoopStart.Text = "0";
             txtBoxLoopEnd  .Text = numSamples.ToString();
@@ -634,10 +622,6 @@ public class RadxUi
             new[] { "\r\n", "\r", "\n" },
             StringSplitOptions.None
         );
-        
-        Console.WriteLine(" \"" + path + "\" \"" + EXE_DIR + TMP_DIR + TMP_WAV_FILE + "\"");
-        
-        Console.WriteLine(rawOutput);
         
         if (output.Length <= 4)
         {
